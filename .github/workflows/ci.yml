@@ -32,7 +32,11 @@ jobs:
 
       - name: Lint check
         run: npm run lint
-        continue-on-error: true # Allow CI to continue for now if there are minor lint issues, but report them
+        continue-on-error: true
+
+      - name: Type-check
+        run: npm run type-check
+        working-directory: apps/web
 
       - name: Run Unit & Integration Tests
         run: npm run test
