@@ -101,7 +101,7 @@ export default function PaymentMethodsClient() {
             const res = await fetch('/api/user/payment-methods');
             const data = await res.json();
             setPaymentMethods(data);
-        } catch (error) {
+        } catch (_error) {
             toast.error('Failed to load payment methods');
         } finally {
             setIsLoading(false);
@@ -123,7 +123,7 @@ export default function PaymentMethodsClient() {
             } else {
                 throw new Error('Failed to delete');
             }
-        } catch (error) {
+        } catch (_error) {
             toast.error('Failed to remove card');
         }
     };
