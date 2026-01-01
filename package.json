@@ -1,6 +1,7 @@
 {
   "name": "fixelo",
   "version": "1.0.0",
+  "packageManager": "npm@10.9.4",
   "private": true,
   "description": "Fixelo - Professional Home Cleaning Marketplace",
   "workspaces": [
