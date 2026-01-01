@@ -44,6 +44,7 @@ function BookDetailsPageContent() {
         },
     });
 
+    const [error, setError] = useState<string | null>(null);
     const setServiceIdStore = useBookingStore((state) => state.setServiceId);
     const setAddOnsStore = useBookingStore((state) => state.setAddOns);
     const setHomeDetails = useBookingStore((state) => state.setHomeDetails);
@@ -111,7 +112,6 @@ function BookDetailsPageContent() {
         }
     }, [service, calculatePrice]);
 
-    const setHomeDetails = useBookingStore((state) => state.setHomeDetails);
 
     const onSubmit = (data: HomeDetailsData) => {
         setHomeDetails({
