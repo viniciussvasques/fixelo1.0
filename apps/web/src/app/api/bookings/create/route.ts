@@ -102,10 +102,8 @@ export async function POST(req: Request) {
                         data: {
                             referrerId: referrer.id,
                             referredId: userId,
-                            status: 'PENDING',
-                            referredAt: new Date()
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        } as any // avoiding field name mismatch if any
+                            status: 'PENDING'
+                        }
                     });
                 }
             }

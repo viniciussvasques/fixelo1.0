@@ -27,7 +27,6 @@ export function handleError(error: unknown) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function successResponse(data: any, status: number = 200) {
+export function successResponse(data: unknown, status: number = 200) {
     return NextResponse.json(data, { status });
 }

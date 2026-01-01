@@ -10,11 +10,17 @@ const DAYS = [
     "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"
 ];
 
+interface DayAvailability {
+    active: boolean;
+    start: string;
+    end: string;
+}
+
 // Mock initial data
 const INITIAL_AVAILABILITY = DAYS.reduce((acc, day) => {
     acc[day] = { active: true, start: "09:00", end: "17:00" };
     return acc;
-}, {} as Record<string, any>);
+}, {} as Record<string, DayAvailability>);
 
 export default function SchedulePage() {
     const [availability, setAvailability] = useState(INITIAL_AVAILABILITY);

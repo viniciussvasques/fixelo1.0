@@ -22,7 +22,7 @@ vi.mock('next/cache', () => ({
 // Mock Server Actions
 vi.mock('next/server', () => ({
     NextResponse: {
-        json: (body: any, init?: any) => ({
+        json: (body: unknown, init?: ResponseInit) => ({
             body,
             init,
             ...init,

@@ -1,7 +1,6 @@
 import { prisma } from '@fixelo/database';
-import { CleanerProfile } from '@prisma/client';
+import { Prisma, CleanerProfile } from '@prisma/client';
 
-// Constants for Scoring Weights
 const WEIGHTS = {
     RATING: 0.4,
     DISTANCE: 0.2,
@@ -9,8 +8,12 @@ const WEIGHTS = {
     PUNCTUALITY: 0.2
 };
 
+type CleanerWithAvailability = Prisma.CleanerProfileGetPayload<{
+    include: { availability: true, user: true }
+}>;
+
 interface ScoredCleaner {
-    cleaner: CleanerProfile;
+    cleaner: CleanerWithAvailability;
     score: number;
     distance: number;
 }
@@ -48,11 +51,10 @@ export async function findMatches(bookingId: string): Promise<ScoredCleaner[]> {
     for (const cleaner of allCleaners) {
         // A. Availability Check
         // Explicitly cast to any for availability access if intersection type fails, or use proper Payload type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const availability = (cleaner as any).availability;
+        const availability = cleaner.availability;
         if (!availability) continue;
 
-        const isAvailable = availability.some((slot: any) =>
+        const isAvailable = availability.some((slot) =>
             slot.dayOfWeek === bookingDayOfWeek &&
             slot.isActive
         );

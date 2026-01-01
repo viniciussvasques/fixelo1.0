@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
+import Image from 'next/image';
+
 const Avatar = React.forwardRef<
     HTMLDivElement,
     React.HTMLAttributes<HTMLDivElement>
@@ -19,14 +21,19 @@ Avatar.displayName = 'Avatar';
 const AvatarImage = React.forwardRef<
     HTMLImageElement,
     React.ImgHTMLAttributes<HTMLImageElement>
->(({ className, ...props }, ref) => (
-    <img
-        ref={ref}
-        alt={props.alt || ''}
-        className={cn('aspect-square h-full w-full object-cover', className)}
-        {...props}
-    />
-));
+>(({ className, src, alt, ...props }, _ref) => {
+    // Destructure to remove width/height when using fill
+    const { width: _w, height: _h, ...rest } = props;
+    return (
+        <Image
+            src={src || ''}
+            alt={alt || 'Avatar'}
+            fill
+            className={cn('aspect-square h-full w-full object-cover', className)}
+            {...(rest as Record<string, unknown>)}
+        />
+    );
+});
 AvatarImage.displayName = 'AvatarImage';
 
 const AvatarFallback = React.forwardRef<

@@ -89,8 +89,8 @@ export default function SettingsClient() {
                 setShowPasswordModal(false);
                 setPasswordSuccess(false);
             }, 2000);
-        } catch (error: any) {
-            setPasswordError(error.message);
+        } catch (error) {
+            setPasswordError(error instanceof Error ? error.message : 'Failed to change password');
         } finally {
             setIsChangingPassword(false);
         }

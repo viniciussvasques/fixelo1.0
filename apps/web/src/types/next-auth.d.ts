@@ -1,20 +1,20 @@
-import 'next-auth';
-import { UserRole } from '@fixelo/database';
+import { DefaultSession } from 'next-auth';
+import { UserRole } from '@prisma/client';
 
 declare module 'next-auth' {
-    interface User {
-        role: UserRole;
-    }
-
     interface Session {
         user: {
             id: string;
-            email: string;
-            name: string;
             role: UserRole;
-            referralCode?: string;
-            credits?: number;
-        };
+            referralCode: string | null;
+            credits: number;
+        } & DefaultSession['user'];
+    }
+
+    interface User {
+        role: UserRole;
+        referralCode?: string | null;
+        credits?: number;
     }
 }
 
@@ -22,7 +22,7 @@ declare module 'next-auth/jwt' {
     interface JWT {
         userId: string;
         role: UserRole;
-        referralCode?: string;
-        credits?: number;
+        referralCode: string | null;
+        credits: number;
     }
 }

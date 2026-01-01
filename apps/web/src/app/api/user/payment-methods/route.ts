@@ -2,13 +2,26 @@ import { stripe } from '@/lib/stripe';
 import { prisma } from '@fixelo/database';
 import { withAuth, handleError, successResponse, ApiError } from '@/lib/api-utils';
 
+const db = prisma as unknown as {
+    user: {
+        findUnique: (args: {
+            where: { email: string };
+            select?: { id?: boolean; stripeCustomerId?: boolean };
+        }) => Promise<{ id: string; stripeCustomerId: string | null } | null>;
+        update: (args: {
+            where: { id: string };
+            data: { stripeCustomerId: string };
+        }) => Promise<unknown>;
+    };
+};
+
 export async function GET() {
-    return withAuth(async (userId, email) => {
+    return withAuth(async (_userId, email) => {
         try {
-            const user = await prisma.user.findUnique({
+            const user = await db.user.findUnique({
                 where: { email },
                 select: { stripeCustomerId: true }
-            }) as any;
+            });
 
             if (!user?.stripeCustomerId) {
                 return successResponse([]);
@@ -35,10 +48,10 @@ export async function GET() {
 export async function POST(_req: Request) {
     return withAuth(async (userId, email) => {
         try {
-            const user = await prisma.user.findUnique({
+            const user = await db.user.findUnique({
                 where: { email },
                 select: { id: true, stripeCustomerId: true }
-            }) as any;
+            });
 
             if (!user) {
                 throw new ApiError('User not found', 404);
@@ -53,7 +66,7 @@ export async function POST(_req: Request) {
                     metadata: { userId }
                 });
                 customerId = customer.id;
-                await (prisma.user as any).update({
+                await db.user.update({
                     where: { id: userId },
                     data: { stripeCustomerId: customerId }
                 });

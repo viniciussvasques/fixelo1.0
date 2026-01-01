@@ -65,8 +65,8 @@ export default async function BookingDetailsPage({ params }: Props) {
             <h1 className="text-3xl font-bold mb-2">Booking Details</h1>
             <p className="text-muted-foreground">Booking ID: #{booking.id.slice(0, 8)}</p>
           </div>
-          <Badge variant={BOOKING_STATUS[booking.status]?.variant as any} className="text-sm px-3 py-1">
-            {BOOKING_STATUS[booking.status]?.label || booking.status}
+          <Badge variant={(BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.variant || 'default') as 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'outline'} className="text-sm px-3 py-1">
+            {BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.label || booking.status}
           </Badge>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { updateCleanerMetrics } from './metrics';
 import { prisma } from '@fixelo/database';
+import type { CleanerProfile } from '@prisma/client';
 
 vi.mock('@fixelo/database', () => ({
     prisma: {
@@ -14,7 +15,7 @@ vi.mock('@fixelo/database', () => ({
 describe('Metrics Calculation', () => {
     it('should calculate acceptance, completion, and quality scores correctly', async () => {
         // Setup mock data
-        (prisma.cleanerProfile.findUnique as any).mockResolvedValue({
+        vi.mocked(prisma.cleanerProfile.findUnique).mockResolvedValue({
             id: 'cleaner1',
             totalJobsOffered: 10,
             totalJobsCompleted: 8,
@@ -35,7 +36,7 @@ describe('Metrics Calculation', () => {
                 { rating: 5 },
                 { rating: 5 } // Avg: 4.75
             ]
-        });
+        } as unknown as CleanerProfile);
 
         // 9 Accepted / 10 Offered = 0.9 Acceptance
         // 8 Completed / 9 Accepted = 0.88 Completion

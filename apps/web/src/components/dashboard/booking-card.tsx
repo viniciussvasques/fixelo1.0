@@ -12,7 +12,12 @@ interface BookingCardProps {
         timeWindow: string;
         status: string;
         totalPrice: number;
-        addressSnapshot: any;
+        addressSnapshot: {
+            street: string;
+            city: string;
+            state?: string;
+            zipCode?: string;
+        };
     };
 }
 

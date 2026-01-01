@@ -1,26 +1,27 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig, User } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
+import type { UserRole } from '@prisma/client';
 
 export const authConfig = {
     providers: [], // Providers configured in auth.ts
     callbacks: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async jwt({ token, user }: any) {
-            if (user) {
-                token.role = user.role;
-                token.userId = user.id;
-                token.referralCode = (user as any).referralCode;
-                token.credits = (user as any).credits;
+        async jwt({ token, user }) {
+            const extendedUser = user as (User & { role: UserRole, referralCode?: string | null, credits?: number });
+            if (extendedUser) {
+                token.role = extendedUser.role;
+                token.userId = extendedUser.id as string;
+                token.referralCode = extendedUser.referralCode || null;
+                token.credits = extendedUser.credits || 0;
             }
             return token;
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async session({ session, token }: any) {
-            if (session.user && token) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                session.user.role = token.role as any;
-                session.user.id = token.userId as string;
-                session.user.referralCode = token.referralCode as string;
-                session.user.credits = token.credits as number;
+        async session({ session, token }) {
+            const extendedToken = token as JWT;
+            if (session.user && extendedToken) {
+                session.user.role = extendedToken.role;
+                session.user.id = extendedToken.userId;
+                session.user.referralCode = extendedToken.referralCode;
+                session.user.credits = extendedToken.credits;
             }
             return session;
         },

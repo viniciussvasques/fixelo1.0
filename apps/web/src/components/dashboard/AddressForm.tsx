@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 
-interface AddressFormData {
+export interface AddressFormData {
     street: string;
     unit?: string | null;
     city: string;
@@ -39,8 +39,9 @@ export default function AddressForm({ address, onSubmit, onCancel }: AddressForm
 
         try {
             await onSubmit(formData);
-        } catch (err: any) {
-            setError(err.message || 'Failed to save address');
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Failed to save address';
+            setError(message);
         } finally {
             setIsSubmitting(false);
         }

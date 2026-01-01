@@ -16,7 +16,7 @@ interface SavedAddress {
 }
 
 interface AddressSelectorProps {
-    onSelect: (address: any) => void;
+    onSelect: (address: SavedAddress) => void;
     selectedAddressId?: string;
 }
 

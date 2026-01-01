@@ -49,8 +49,9 @@ function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel:
                 toast.success('Card added successfully!');
                 onSuccess();
             }
-        } catch (err: any) {
-            toast.error(err.message || 'Failed to add card');
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Failed to add card';
+            toast.error(message);
         } finally {
             setIsSubmitting(false);
         }

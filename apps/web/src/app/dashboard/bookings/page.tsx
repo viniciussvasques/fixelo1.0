@@ -111,9 +111,9 @@ export default async function BookingsPage() {
                     </TableCell>
                     <TableCell>
                       <Badge
-                        variant={BOOKING_STATUS[booking.status]?.variant as any}
+                        variant={(BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.variant || 'default') as 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'outline'}
                       >
-                        {BOOKING_STATUS[booking.status]?.label || booking.status}
+                        {BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.label || booking.status}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -169,8 +169,8 @@ export default async function BookingsPage() {
                       {formatDate(booking.scheduledDate)} • {booking.timeWindow}
                     </div>
                   </div>
-                  <Badge variant={BOOKING_STATUS[booking.status]?.variant as any}>
-                    {BOOKING_STATUS[booking.status]?.label || booking.status}
+                  <Badge variant={(BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.variant || 'default') as 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'outline'}>
+                    {BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.label || booking.status}
                   </Badge>
                 </div>
                 {booking.address && (

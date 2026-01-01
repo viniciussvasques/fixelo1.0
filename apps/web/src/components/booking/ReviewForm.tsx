@@ -39,8 +39,8 @@ export default function ReviewForm({ bookingId, onSuccess }: ReviewFormProps) {
             setIsSubmitted(true);
             toast.success('Thank you for your feedback!');
             onSuccess?.();
-        } catch (error: any) {
-            toast.error(error.message);
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to submit review');
         } finally {
             setIsSubmitting(false);
         }
@@ -75,8 +75,8 @@ export default function ReviewForm({ bookingId, onSuccess }: ReviewFormProps) {
                             >
                                 <Star
                                     className={`h-10 w-10 ${star <= (hoverRating || rating)
-                                            ? 'text-yellow-400 fill-yellow-400'
-                                            : 'text-gray-300'
+                                        ? 'text-yellow-400 fill-yellow-400'
+                                        : 'text-gray-300'
                                         }`}
                                 />
                             </button>

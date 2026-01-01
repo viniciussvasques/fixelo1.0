@@ -6,7 +6,14 @@ import { DollarSign, TrendingUp, Calendar, CreditCard, Loader2 } from 'lucide-re
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-function StatCard({ title, value, description, icon: Icon }: any) {
+interface StatCardProps {
+    title: string;
+    value: string | number;
+    description?: string;
+    icon: React.ElementType;
+}
+
+function StatCard({ title, value, description, icon: Icon }: StatCardProps) {
     return (
         <Card>
             <CardContent className="p-6">
@@ -31,9 +38,34 @@ function StatCard({ title, value, description, icon: Icon }: any) {
     );
 }
 
+interface EarningItem {
+    id: string;
+    service: string;
+    date: string;
+    amount: number;
+}
+
+interface PayoutItem {
+    id: string;
+    createdAt: string;
+    amount: number;
+    status: string;
+}
+
+interface EarningsData {
+    stats: {
+        thisWeek: number;
+        thisMonth: number;
+        pending: number;
+        lifetime: number;
+    };
+    pendingEarnings: EarningItem[];
+    payouts: PayoutItem[];
+}
+
 export default function EarningsPage() {
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<EarningsData | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -118,7 +150,7 @@ export default function EarningsPage() {
                             <p className="text-center text-muted-foreground py-8">No pending earnings.</p>
                         ) : (
                             <div className="space-y-4">
-                                {pendingEarnings.map((item: any) => (
+                                {pendingEarnings.map((item: EarningItem) => (
                                     <div key={item.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                                         <div>
                                             <p className="font-medium">{item.service}</p>
@@ -150,7 +182,7 @@ export default function EarningsPage() {
                             <p className="text-center text-muted-foreground py-8">No payout history yet.</p>
                         ) : (
                             <div className="space-y-4">
-                                {payouts.map((payout: any) => (
+                                {payouts.map((payout: PayoutItem) => (
                                     <div key={payout.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
                                         <div className="flex items-center gap-3">
                                             <div className="p-2 bg-green-100 text-green-700 rounded-full">

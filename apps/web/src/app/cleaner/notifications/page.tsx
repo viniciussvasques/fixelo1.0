@@ -34,7 +34,7 @@ export default async function NotificationsPage() {
                     </Card>
                 ) : (
                     notifications.map((notification) => {
-                        const metadata = notification.metadata as any;
+                        const metadata = notification.metadata as { bookingId?: string } | null;
                         const link = metadata?.bookingId ? `/cleaner/jobs/${metadata.bookingId}` : '#';
 
                         return (

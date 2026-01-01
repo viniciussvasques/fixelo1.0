@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Mail, Phone, MapPin, Loader2 } from 'lucide-react';
-import AddressForm from '@/components/dashboard/AddressForm';
+import AddressForm, { AddressFormData } from '@/components/dashboard/AddressForm';
 
 interface Address {
     id: string;
@@ -60,14 +60,14 @@ export default function ProfileClient({ user, addresses: initialAddresses }: Pro
 
             setIsEditing(false);
             router.refresh();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
         } finally {
             setIsSaving(false);
         }
     };
 
-    const handleAddressSubmit = async (data: any) => {
+    const handleAddressSubmit = async (data: AddressFormData) => {
         const url = editingAddress
             ? `/api/user/addresses/${editingAddress.id}`
             : '/api/user/addresses';
@@ -111,8 +111,8 @@ export default function ProfileClient({ user, addresses: initialAddresses }: Pro
 
             setAddresses(addresses.filter(a => a.id !== id));
             router.refresh();
-        } catch (err: any) {
-            alert(err.message);
+        } catch (err) {
+            alert(err instanceof Error ? err.message : 'An error occurred');
         }
     };
 

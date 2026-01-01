@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useBookingStore } from '@/store/booking';
 import { ServiceType } from '@prisma/client';
-import { formatCurrency, cn } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import { Counter } from '@/components/ui/counter';
 import { ArrowLeft, ArrowRight, Clock } from 'lucide-react';
 
@@ -36,7 +36,7 @@ function BookDetailsPageContent() {
         setValue,
         formState: { errors: _errors },
     } = useForm<HomeDetailsData>({
-        resolver: zodResolver(homeDetailsSchema as any),
+        resolver: zodResolver(homeDetailsSchema),
         defaultValues: {
             bedrooms: 2,
             bathrooms: 2,

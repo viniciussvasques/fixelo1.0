@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from '../app/api/create-payment-intent/route';
 import { prisma } from '@fixelo/database';
 import { stripe } from '@/lib/stripe';
+import type { ServiceType, AddOn } from '@prisma/client';
+import type Stripe from 'stripe';
 
 // Mocks
 vi.mock('@fixelo/database', () => ({
@@ -34,19 +36,19 @@ describe('Create Payment Intent API', () => {
 
     it('should correctly sum service price + add-ons', async () => {
         // Setup
-        (prisma.serviceType.findUnique as any).mockResolvedValue({
+        vi.mocked(prisma.serviceType.findUnique).mockResolvedValue({
             id: 'service1',
             basePrice: 100 // $100
-        });
+        } as ServiceType);
 
-        (prisma.addOn.findMany as any).mockResolvedValue([
+        vi.mocked(prisma.addOn.findMany).mockResolvedValue([
             { id: 'addon1', price: 20 }, // $20
             { id: 'addon2', price: 30 }  // $30
-        ]);
+        ] as AddOn[]);
 
-        (stripe.paymentIntents.create as any).mockResolvedValue({
+        vi.mocked(stripe.paymentIntents.create).mockResolvedValue({
             client_secret: 'secret_123'
-        });
+        } as unknown as Stripe.Response<Stripe.PaymentIntent>);
 
         const req = {
             json: async () => ({
@@ -54,10 +56,10 @@ describe('Create Payment Intent API', () => {
                 homeDetails: { bedrooms: 1, bathrooms: 1, hasPets: false },
                 addOns: ['addon1', 'addon2']
             })
-        } as any;
+        } as unknown as Request;
 
         const res = await POST(req);
-        const _data = await (res as any).body; // Mocked NextResponse returns body
+        const _data = res.body; // Mocked NextResponse returns body
 
         // Assertions
         // Total should be 100 + 20 + 30 = 150

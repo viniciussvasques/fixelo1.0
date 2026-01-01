@@ -1,6 +1,13 @@
 import cron from 'node-cron';
 import { prisma } from '@fixelo/database';
-import { stripe } from '@/lib/stripe'; // Ensure this works in standalone script context (might need ts-node)
+import { stripe } from '@/lib/stripe';
+import { CleanerProfile } from '@prisma/client';
+
+interface CleanerPayoutData {
+    cleaner: CleanerProfile;
+    amount: number;
+    bookings: string[];
+}
 
 // Configuration
 const PAYOUT_CRON_SCHEDULE = '0 9 * * 5'; // Every Friday at 9:00 AM
@@ -40,7 +47,7 @@ async function processWeeklyPayouts() {
         console.log(`Found ${bookings.length} eligible bookings.`);
 
         // 2. Group by Cleaner
-        const payoutsByCleaner = new Map<string, { cleaner: any; amount: number; bookings: string[] }>();
+        const payoutsByCleaner = new Map<string, CleanerPayoutData>();
 
         for (const booking of bookings) {
             // Find the accepted cleaner (should be only one)

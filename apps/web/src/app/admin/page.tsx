@@ -179,8 +179,8 @@ export default async function AdminDashboard() {
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant={BOOKING_STATUS[booking.status]?.variant as any}>
-                                            {BOOKING_STATUS[booking.status]?.label || booking.status}
+                                        <Badge variant={(BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.variant || 'default') as 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'outline'}>
+                                            {BOOKING_STATUS[booking.status as keyof typeof BOOKING_STATUS]?.label || booking.status}
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="text-right font-semibold">

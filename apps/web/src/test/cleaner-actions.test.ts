@@ -2,6 +2,9 @@ import { describe, it, vi } from 'vitest';
 import { acceptJob } from '../app/cleaner/actions';
 import { prisma } from '@fixelo/database';
 import { auth } from '@/lib/auth';
+import type { Session } from 'next-auth';
+import type { CleanerProfile } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 vi.mock('@fixelo/database', () => ({
     prisma: {
@@ -30,8 +33,11 @@ vi.mock('@/lib/metrics', () => ({
 
 describe('Cleaner Actions: acceptJob', () => {
     it('should use updateMany for atomic booking status update', async () => {
-        (auth as any).mockResolvedValue({ user: { id: 'user1', role: 'CLEANER' } });
-        (prisma.cleanerProfile.findUnique as any).mockResolvedValue({ id: 'cleaner1' });
+        vi.mocked(auth).mockResolvedValue({
+            user: { id: 'user1', role: UserRole.CLEANER },
+            expires: new Date(Date.now() + 3600000).toISOString()
+        } as unknown as Session);
+        vi.mocked(prisma.cleanerProfile.findUnique).mockResolvedValue({ id: 'cleaner1' } as CleanerProfile);
 
         await acceptJob('booking1');
 

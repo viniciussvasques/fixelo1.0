@@ -41,8 +41,9 @@ export default function BookingDetailsClient({ bookingId, status }: BookingDetai
 
             setShowCancelModal(false);
             router.refresh();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Failed to cancel booking';
+            setError(message);
         } finally {
             setIsCancelling(false);
         }
