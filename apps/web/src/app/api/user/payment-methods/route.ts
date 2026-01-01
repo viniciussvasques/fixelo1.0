@@ -35,7 +35,7 @@ export async function GET() {
 export async function POST(_req: Request) {
     return withAuth(async (userId, email) => {
         try {
-            let user = await prisma.user.findUnique({
+            const user = await prisma.user.findUnique({
                 where: { email },
                 select: { id: true, stripeCustomerId: true }
             }) as any;

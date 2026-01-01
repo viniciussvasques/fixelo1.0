@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useBookingStore } from '@/store/booking';
 import { ServiceType } from '@prisma/client';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { Counter } from '@/components/ui/counter';
 import { ArrowLeft, ArrowRight, Clock } from 'lucide-react';
 
@@ -44,56 +44,16 @@ function BookDetailsPageContent() {
         },
     });
 
+    const setServiceIdStore = useBookingStore((state) => state.setServiceId);
+    const setAddOnsStore = useBookingStore((state) => state.setAddOns);
+    const setHomeDetails = useBookingStore((state) => state.setHomeDetails);
+    const addOns = useBookingStore((state) => state.addOns);
+
     const bedrooms = watch('bedrooms');
     const bathrooms = watch('bathrooms');
     const hasPets = watch('hasPets');
 
-    const [error, setError] = useState<string | null>(null);
-    const setServiceIdStore = useBookingStore((state) => state.setServiceId);
-
-    // Register custom inputs manually since we replaced selects with Counters
-    useEffect(() => {
-        register('bedrooms');
-        register('bathrooms');
-    }, [register]);
-
-    useEffect(() => {
-        if (!serviceId) {
-            setError('No service ID provided in URL');
-            return;
-        }
-        setServiceIdStore(serviceId);
-        fetchService();
-    }, [serviceId, setServiceIdStore]);
-
-    const addOns = useBookingStore((state) => state.addOns);
-    const setAddOnsStore = useBookingStore((state) => state.setAddOns);
-
-    useEffect(() => {
-        if (service) {
-            calculatePrice();
-        }
-    }, [bedrooms, bathrooms, hasPets, service, addOns]);
-
-    const fetchService = async () => {
-        try {
-            const response = await fetch('/api/service-types');
-            const data = await response.json();
-            const selectedService = data.serviceTypes.find(
-                (s: ServiceType) => s.id === serviceId
-            );
-            if (selectedService) {
-                setService(selectedService);
-            } else {
-                setError(`Service not found for ID: ${serviceId}`);
-            }
-        } catch (error) {
-            console.error('Error fetching service:', error);
-            setError('Error fetching service details');
-        }
-    };
-
-    const calculatePrice = () => {
+    const calculatePrice = React.useCallback(() => {
         if (!service) return;
 
         let price = service.basePrice;
@@ -110,7 +70,46 @@ function BookDetailsPageContent() {
         const baseTime = 120;
         const time = baseTime + (bedrooms - 1) * service.timePerBed + (bathrooms - 1) * service.timePerBath;
         setEstimatedTime(time);
-    };
+    }, [bedrooms, bathrooms, hasPets, service, addOns]);
+
+    const fetchService = React.useCallback(async () => {
+        try {
+            const response = await fetch('/api/service-types');
+            const data = await response.json();
+            const selectedService = data.serviceTypes.find(
+                (s: ServiceType) => s.id === serviceId
+            );
+            if (selectedService) {
+                setService(selectedService);
+            } else {
+                setError(`Service not found for ID: ${serviceId}`);
+            }
+        } catch (error) {
+            console.error('Error fetching service:', error);
+            setError('Error fetching service details');
+        }
+    }, [serviceId]);
+
+    // Register custom inputs manually since we replaced selects with Counters
+    useEffect(() => {
+        register('bedrooms');
+        register('bathrooms');
+    }, [register]);
+
+    useEffect(() => {
+        if (!serviceId) {
+            setError('No service ID provided in URL');
+            return;
+        }
+        setServiceIdStore(serviceId);
+        fetchService();
+    }, [serviceId, setServiceIdStore, fetchService]);
+
+    useEffect(() => {
+        if (service) {
+            calculatePrice();
+        }
+    }, [service, calculatePrice]);
 
     const setHomeDetails = useBookingStore((state) => state.setHomeDetails);
 

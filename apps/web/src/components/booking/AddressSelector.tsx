@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { MapPin, Plus, Check } from 'lucide-react';
 
@@ -26,15 +26,7 @@ export default function AddressSelector({ onSelect, selectedAddressId }: Address
     const [showNewForm, setShowNewForm] = useState(false);
     const [_isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        if (session?.user) {
-            fetchAddresses();
-        } else {
-            setIsLoading(false);
-        }
-    }, [session]);
-
-    const fetchAddresses = async () => {
+    const fetchAddresses = React.useCallback(async () => {
         try {
             const response = await fetch('/api/user/addresses');
             if (response.ok) {
@@ -52,7 +44,15 @@ export default function AddressSelector({ onSelect, selectedAddressId }: Address
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [selectedAddressId, onSelect]);
+
+    useEffect(() => {
+        if (session?.user) {
+            fetchAddresses();
+        } else {
+            setIsLoading(false);
+        }
+    }, [session, fetchAddresses]);
 
     // If not logged in or no addresses, show new form option
     if (!session?.user || addresses.length === 0) {

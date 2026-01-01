@@ -26,7 +26,7 @@ export async function GET() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        let settings = await prisma.financialSettings.findFirst();
+        const settings = await prisma.financialSettings.findFirst();
 
         if (!settings) {
             // Return defaults if not set
