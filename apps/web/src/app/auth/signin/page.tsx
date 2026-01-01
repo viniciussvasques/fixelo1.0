@@ -28,7 +28,7 @@ function SignInPageContent() {
         handleSubmit,
         formState: { errors },
     } = useForm<SigninFormData>({
-        resolver: zodResolver(signinSchema as any),
+        resolver: zodResolver(signinSchema),
     });
 
     const onSubmit = async (data: SigninFormData) => {

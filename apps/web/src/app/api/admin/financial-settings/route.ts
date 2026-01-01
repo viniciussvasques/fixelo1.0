@@ -51,9 +51,8 @@ export async function POST(req: Request) {
         // Find existing or create new
         const existing = await prisma.financialSettings.findFirst();
 
-        let settings;
         if (existing) {
-            settings = await prisma.financialSettings.update({
+            const updatedSettings = await prisma.financialSettings.update({
                 where: { id: existing.id },
                 data: {
                     platformFeePercent: parseFloat(body.platformFeePercent),
@@ -66,8 +65,9 @@ export async function POST(req: Request) {
                     requireCustomerReview: body.requireCustomerReview
                 }
             });
+            return NextResponse.json(updatedSettings);
         } else {
-            settings = await prisma.financialSettings.create({
+            const newSettings = await prisma.financialSettings.create({
                 data: {
                     platformFeePercent: parseFloat(body.platformFeePercent),
                     insuranceFeePercent: parseFloat(body.insuranceFeePercent),
@@ -79,9 +79,8 @@ export async function POST(req: Request) {
                     requireCustomerReview: body.requireCustomerReview
                 }
             });
+            return NextResponse.json(newSettings);
         }
-
-        return NextResponse.json(settings);
 
     } catch (error) {
         console.error("Error saving settings:", error);

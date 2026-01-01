@@ -38,7 +38,7 @@ function AddressPageContent() {
     }, [selectedDate, selectedTimeSlot, router]);
 
     const { register, handleSubmit, formState: { errors } } = useForm<AddressFormData>({
-        resolver: zodResolver(addressSchema as any),
+        resolver: zodResolver(addressSchema),
         defaultValues: {
             ...(storedAddress || { street: '', city: '', state: '', zipCode: '', unit: '' }),
             specialInstructions: storedInstructions || '',

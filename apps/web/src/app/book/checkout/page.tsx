@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useBookingStore } from '@/store/booking';
 import { formatCurrency } from '@/lib/utils';
+import { ServiceType, AddOn } from '@prisma/client';
 import { format } from 'date-fns';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -78,8 +79,8 @@ export default function CheckoutPage() {
         reset: _reset
     } = useBookingStore();
 
-    const [service, setService] = useState<any>(null);
-    const [availableAddOns, setAvailableAddOns] = useState<any[]>([]);
+    const [service, setService] = useState<ServiceType | null>(null);
+    const [availableAddOns, setAvailableAddOns] = useState<AddOn[]>([]);
     const [calculatedPrice, setCalculatedPrice] = useState(0);
     const [clientSecret, setClientSecret] = useState<string>('');
     const [isLoading, setIsLoading] = useState(true);
@@ -104,7 +105,7 @@ export default function CheckoutPage() {
             const serviceData = await serviceRes.json();
             const addOnsData = await addOnsRes.json();
 
-            const foundService = serviceData.serviceTypes.find((s: any) => s.id === serviceId);
+            const foundService = serviceData.serviceTypes.find((s: ServiceType) => s.id === serviceId);
             if (foundService) setService(foundService);
             if (addOnsData.addOns) setAvailableAddOns(addOnsData.addOns);
 
@@ -118,7 +119,7 @@ export default function CheckoutPage() {
             }
 
             const addOnsPrice = addOns.reduce((total, addOnId) => {
-                const ad = addOnsData.addOns?.find((a: any) => a.id === addOnId);
+                const ad = addOnsData.addOns?.find((a: AddOn) => a.id === addOnId);
                 return total + (ad ? ad.price : 0);
             }, 0);
 

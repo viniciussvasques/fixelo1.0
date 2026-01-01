@@ -3,6 +3,7 @@ import type { NextAuthConfig } from 'next-auth';
 export const authConfig = {
     providers: [], // Providers configured in auth.ts
     callbacks: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async jwt({ token, user }: any) {
             if (user) {
                 token.role = user.role;
@@ -12,8 +13,10 @@ export const authConfig = {
             }
             return token;
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async session({ session, token }: any) {
             if (session.user && token) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 session.user.role = token.role as any;
                 session.user.id = token.userId as string;
                 session.user.referralCode = token.referralCode as string;

@@ -48,6 +48,7 @@ export async function findMatches(bookingId: string): Promise<ScoredCleaner[]> {
     for (const cleaner of allCleaners) {
         // A. Availability Check
         // Explicitly cast to any for availability access if intersection type fails, or use proper Payload type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const availability = (cleaner as any).availability;
         if (!availability) continue;
 
