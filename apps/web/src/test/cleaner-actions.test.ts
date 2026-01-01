@@ -33,11 +33,11 @@ vi.mock('@/lib/metrics', () => ({
 
 describe('Cleaner Actions: acceptJob', () => {
     it('should use updateMany for atomic booking status update', async () => {
-        vi.mocked(auth).mockResolvedValue({
+        vi.mocked(auth as unknown as () => Promise<Session | null>).mockResolvedValue({
             user: { id: 'user1', role: UserRole.CLEANER },
             expires: new Date(Date.now() + 3600000).toISOString()
-        } as unknown as Session);
-        vi.mocked(prisma.cleanerProfile.findUnique).mockResolvedValue({ id: 'cleaner1' } as CleanerProfile);
+        } as Session);
+        vi.mocked(prisma.cleanerProfile.findUnique).mockResolvedValue({ id: 'cleaner1' } as unknown as CleanerProfile);
 
         await acceptJob('booking1');
 
